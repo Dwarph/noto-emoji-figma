@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Inter:wght@400;600&display=block" />
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    background: #E4FE5B; color: #151902; font-family: Inter, sans-serif;
+    display: grid; grid-template-columns: 1fr 820px; align-items: center; gap: 80px; padding: 0 140px; box-sizing: border-box;
+  }
+  h1 { font: 700 128px/1 Barlow, sans-serif; margin: 0 0 36px; letter-spacing: -1px; }
+  p { font-size: 40px; line-height: 1.35; margin: 0 0 48px; max-width: 760px; }
+  .pills { display: flex; gap: 16px; flex-wrap: wrap; }
+  .pill { background: #151902; color: #E4FE5B; font-weight: 600; font-size: 28px; padding: 12px 28px; border-radius: 999px; }
+  .panel {
+    background: #fff; border-radius: 48px; padding: 48px; box-shadow: 0 30px 80px rgba(21, 25, 2, .18);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; transform: rotate(-3deg);
+  }
+  .panel img { width: 160px; height: 160px; display: block; margin: auto; }
+  .credit { position: absolute; left: 140px; bottom: 56px; font-size: 22px; opacity: .6; }
+</style>
+</head>
+<body>
+  <div>
+    <h1>Noto Emoji<br />Picker</h1>
+    <p>Search and insert Google’s Noto emoji: 2D or 3D, static or animated.</p>
+    <div class="pills"><span class="pill">2D + 3D</span><span class="pill">Animated GIFs</span><span class="pill">Skin tones</span><span class="pill">Drag to canvas</span></div>
+  </div>
+  <div class="panel" id="panel"></div>
+  <div class="credit">Emoji by Google Noto Emoji · Apache 2.0 / CC BY 4.0 · Unofficial</div>
+  <script>
+    const items = [
+      ["2d", "1f923"], ["3d", "1f438"], ["2d", "1f525"], ["3d", "1f680"],
+      ["3d", "1f60d"], ["2d", "1f389"], ["3d", "1f4aa"], ["2d", "1f44b_1f3fd"],
+      ["2d", "1f984"], ["3d", "1f355"], ["2d", "2728"], ["3d", "1f3c6"],
+    ];
+    const base = { "2d": "https://fonts.gstatic.com/s/e/notoemoji/latest", "3d": "https://fonts.gstatic.com/s/e/noto3demoji/latest" };
+    document.getElementById("panel").innerHTML = items
+      .map(([s, cp]) => `<img src="${base[s]}/${cp}/${s === "2d" ? "emoji.svg" : "512.png"}" alt="">`)
+      .join("");
+  </script>
+</body>
+</html>
