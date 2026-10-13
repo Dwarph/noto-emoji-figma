@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Inter:wght@400;600&display=swap" />
 <style>
-  /* FitXR Desktop design tokens (FitXR Brain: Repos/design/desktop/design.md) */
+  /* Design tokens */
   :root {
     --primary: #3BBAF3;          /* brand / progress / info accents, focus ring */
     --primary-tint: rgba(59, 186, 243, .12);
@@ -66,7 +66,7 @@
     color: var(--secondary); font-weight: 600;
   }
   .seg button:hover { color: var(--on-neutral); }
-  /* Deliberate divergence from the desktop doc (lime = primary action only): selected toggles use a lime fill with dark text. */
+  /* Selected toggles: lime fill with dark text. */
   .seg button[aria-pressed="true"] { background: var(--tertiary); color: var(--on-tertiary); border-color: rgba(21, 25, 2, .16); box-shadow: var(--shadow); }
   .spacer { flex: 1; }
   .label { color: var(--secondary); }

@@ -3,7 +3,7 @@ import { DEFAULT_PREFS, type CodeToUi, type InsertRequest, type InsertSpec, type
 const PREFS_KEY = "prefs";
 const RECENTS_KEY = "recents";
 
-// FitXR desktop styling is light-only, so Figma theme colours are not injected.
+// The UI uses a fixed light palette, so Figma theme colours are not injected.
 figma.showUI(__html__, { width: 400, height: 600 });
 
 const post = (msg: CodeToUi) => figma.ui.postMessage(msg);
