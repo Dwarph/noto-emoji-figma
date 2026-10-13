@@ -1,6 +1,6 @@
 {
-  "name": "Noto Emoji",
-  "id": "noto-emoji-figma-dev",
+  "name": "Noto Emoji Picker",
+  "id": "1691792252941962403",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",
