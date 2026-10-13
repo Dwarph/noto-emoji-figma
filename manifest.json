@@ -1,0 +1,13 @@
+{
+  "name": "Noto Emoji",
+  "id": "noto-emoji-figma-dev",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma", "figjam"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["https://fonts.gstatic.com", "https://fonts.googleapis.com"],
+    "reasoning": "Emoji SVG, PNG and GIF assets come from Google's Noto emoji CDN; Barlow and Inter UI fonts come from Google Fonts."
+  }
+}

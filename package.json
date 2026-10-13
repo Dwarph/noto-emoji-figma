@@ -1,0 +1,20 @@
+{
+  "name": "noto-emoji-figma",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Figma plugin to search and insert Google Noto emoji (2D/3D, static/animated).",
+  "scripts": {
+    "build:index": "tsx scripts/build-index.ts",
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.141.0",
+    "@types/node": "^26.6.5",
+    "emojibase-data": "^17.0.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

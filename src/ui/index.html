@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Inter:wght@400;600&display=swap" />
+<style>
+  /* FitXR Desktop design tokens (FitXR Brain: Repos/design/desktop/design.md) */
+  :root {
+    --primary: #3BBAF3;          /* brand / progress / info accents, focus ring */
+    --primary-tint: rgba(59, 186, 243, .12);
+    --secondary: #525252;        /* secondary text */
+    --tertiary: #E4FE5B;         /* lime: reserved for the primary action */
+    --on-tertiary: #151902;
+    --neutral: #FAFAFA;          /* shell */
+    --on-neutral: #0A0A0A;       /* primary text */
+    --surface: #FFFFFF;
+    --surface-subtle: #F5F5F5;
+    --border: #E5E5E5;
+    --muted: #A3A3A3;
+    --shadow: 0 1px 2px rgba(10, 10, 10, .06);
+
+    --space-xs: 4px; --space-sm: 8px; --space-md: 16px; --space-lg: 24px;
+    --rounded-sm: 8px; --rounded-md: 12px; --rounded-lg: 16px; --rounded-full: 999px;
+
+    --font-heading: Barlow, Inter, system-ui, sans-serif;
+    --font-ui: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; flex-direction: column;
+    background: var(--neutral); color: var(--on-neutral);
+    font: 400 14px/20px var(--font-ui); /* body-md */
+    overflow: hidden;
+  }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+  /* Search: pill (rounded.full) */
+  /* Header + grid form one white panel so the grey control wells read clearly; the footer stays on the neutral shell. */
+  .top { padding: var(--space-sm) var(--space-sm) 0; display: flex; flex-direction: column; gap: var(--space-sm); background: var(--surface); }
+  .search { position: relative; }
+  .search input {
+    width: 100%; height: 40px; padding: 0 36px;
+    border: 1px solid var(--border); border-radius: var(--rounded-full);
+    background: var(--surface); color: var(--on-neutral); font: inherit; box-shadow: var(--shadow);
+  }
+  .search input::placeholder { color: var(--muted); }
+  .search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+  .search input::-webkit-search-cancel-button { display: none; }
+  .search svg { position: absolute; left: 14px; top: 13px; color: var(--secondary); pointer-events: none; }
+  .search .clear {
+    position: absolute; right: 6px; top: 6px; width: 28px; height: 28px;
+    border: 0; background: none; border-radius: var(--rounded-full); color: var(--secondary); cursor: pointer; display: none; font-size: 12px;
+  }
+  .search .clear:hover { background: var(--surface-subtle); }
+  .search.has-value .clear { display: block; }
+
+  /* Controls (12px floor for functional text) */
+  .controls { display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap; font-size: 12px; line-height: 16px; }
+  .seg { display: inline-flex; background: var(--surface-subtle); border-radius: var(--rounded-sm); padding: 2px; box-shadow: inset 0 0 0 1px var(--border); }
+  .seg button {
+    border: 1px solid transparent; background: none; padding: 0 10px; height: 28px; border-radius: 6px; cursor: pointer;
+    color: var(--secondary); font-weight: 600;
+  }
+  .seg button:hover { color: var(--on-neutral); }
+  /* Deliberate divergence from the desktop doc (lime = primary action only): selected toggles use a lime fill with dark text. */
+  .seg button[aria-pressed="true"] { background: var(--tertiary); color: var(--on-tertiary); border-color: rgba(21, 25, 2, .16); box-shadow: var(--shadow); }
+  .spacer { flex: 1; }
+  .label { color: var(--secondary); }
+  /* Labelled fields (size, skin tone): label + value in one grey well, matching the segmented controls */
+  .field {
+    position: relative; display: inline-flex; align-items: center; height: 32px;
+    background: var(--surface-subtle); border-radius: var(--rounded-sm); padding-left: 10px; box-shadow: inset 0 0 0 1px var(--border);
+  }
+  .field .label { pointer-events: none; white-space: nowrap; }
+  /* Size: custom listbox (native <select> menus can't be styled) */
+  .size-trigger {
+    display: inline-flex; align-items: center; gap: 6px; height: 28px; margin: 0 2px 0 var(--space-sm); padding: 0 8px 0 10px;
+    border: 1px solid rgba(21, 25, 2, .16); border-radius: 6px; background: var(--tertiary); color: var(--on-tertiary);
+    box-shadow: var(--shadow); font-weight: 600; cursor: pointer;
+  }
+  .size-trigger svg { transition: transform .15s; }
+  .size-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .size-menu {
+    position: absolute; z-index: 10; top: calc(100% + 4px); right: 0; min-width: 132px; margin: 0; padding: var(--space-xs);
+    list-style: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--rounded-md);
+    box-shadow: 0 8px 24px rgba(10, 10, 10, .12), 0 1px 2px rgba(10, 10, 10, .06);
+  }
+  .size-menu[hidden] { display: none; }
+  .size-menu li {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm);
+    height: 32px; padding: 0 10px; border-radius: 6px; cursor: pointer; color: var(--on-neutral);
+  }
+  .size-menu li:hover, .size-menu li:focus { background: var(--surface-subtle); outline: none; }
+  .size-menu li:focus-visible { box-shadow: inset 0 0 0 2px var(--primary); }
+  .size-menu li[aria-selected="true"] { font-weight: 600; }
+  .size-menu li svg { visibility: hidden; color: var(--on-neutral); }
+  .size-menu li[aria-selected="true"] svg { visibility: visible; }
+  /* Tone picker */
+  .tone-field { padding-right: 10px; }
+  .tones { display: inline-flex; gap: var(--space-sm); margin-left: 12px; }
+  .tones button {
+    width: 20px; height: 20px; border-radius: var(--rounded-full); cursor: pointer; padding: 0;
+    border: 1px solid rgba(10, 10, 10, .12);
+  }
+  .tones button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface-subtle), 0 0 0 4px var(--primary); }
+
+  /* Category tabs */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: var(--space-sm) var(--space-xs) 0; background: var(--surface); }
+  .tabs button {
+    flex: 1; border: 0; background: none; height: 36px; cursor: pointer; line-height: 1;
+    border-bottom: 2px solid transparent; filter: grayscale(1); opacity: .55;
+  }
+  .tabs button:hover { opacity: 1; }
+  .tabs button[aria-selected="true"] { border-bottom-color: var(--primary); filter: none; opacity: 1; }
+  .tabs button img { width: 20px; height: 20px; vertical-align: middle; }
+
+  /* Grid: opaque surface panel, flat tiles */
+  .scroll { flex: 1; overflow-y: auto; padding: 0 var(--space-sm) var(--space-sm); position: relative; background: var(--surface); }
+  .section h2 { /* label-xs-caps */
+    position: sticky; top: 0; z-index: 1; margin: 0; padding: var(--space-sm) var(--space-xs) var(--space-xs);
+    background: var(--surface); color: var(--secondary);
+    font: 600 11px/14px var(--font-ui); letter-spacing: .04em; text-transform: uppercase;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
+  .tile {
+    position: relative; aspect-ratio: 1; border: 0; background: none; border-radius: var(--rounded-sm);
+    cursor: pointer; padding: var(--space-xs); display: grid; place-items: center;
+  }
+  .tile:hover, .tile:focus-visible { background: var(--surface-subtle); }
+  .tile img { width: 32px; height: 32px; pointer-events: none; }
+  .empty { padding: var(--space-lg) var(--space-md); text-align: center; color: var(--secondary); }
+  .empty strong { display: block; font-size: 28px; line-height: 34px; margin-bottom: var(--space-sm); }
+
+  /* Footer preview */
+  .footer {
+    display: flex; gap: var(--space-sm); align-items: center; padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-sm);
+    border-top: 1px solid var(--border); background: var(--neutral); min-height: 80px;
+  }
+  .footer .pv { width: 56px; height: 56px; flex: none; display: grid; place-items: center; }
+  .footer .pv img { width: 48px; height: 48px; }
+  .footer .meta { flex: 1; min-width: 0; }
+  .footer .name { /* heading-sm */
+    font: 700 18px/24px var(--font-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .footer .tags { color: var(--secondary); font-size: 12px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .footer .pills { display: flex; gap: var(--space-xs); margin-top: var(--space-xs); }
+  .pill {
+    padding: 0 var(--space-sm); border-radius: var(--rounded-full); background: var(--surface-subtle); color: var(--secondary);
+    font-size: 12px; line-height: 20px; font-weight: 600;
+  }
+  .pill.on { background: var(--primary-tint); color: var(--on-neutral); }
+  .footer .hint { flex: 1; text-align: center; color: var(--secondary); font-size: 12px; line-height: 16px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="search" id="searchWrap">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="search" type="search" placeholder="Search emoji" autocomplete="off" spellcheck="false" aria-label="Search emoji" />
+      <button class="clear" id="clear" aria-label="Clear search">✕</button>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Style">
+        <button data-style="2d" aria-pressed="true" title="Classic flat Noto emoji">2D</button>
+        <button data-style="3d" aria-pressed="false" title="New 3D Noto emoji">3D</button>
+      </div>
+      <div class="seg" role="group" aria-label="Motion">
+        <button data-anim="0" aria-pressed="true">Static</button>
+        <button data-anim="1" aria-pressed="false">Animated</button>
+      </div>
+      <span class="spacer"></span>
+      <div class="field size-field">
+        <span class="label" id="sizeLabel">Size</span>
+        <button class="size-trigger" id="sizeBtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sizeLabel sizeValue" title="Size of the inserted emoji">
+          <span id="sizeValue">64 px</span>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="size-menu" id="sizeMenu" role="listbox" aria-labelledby="sizeLabel" hidden></ul>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="field tone-field">
+        <span class="label">Skin tone</span>
+        <div class="tones" id="tones" role="group" aria-label="Skin tone"></div>
+      </div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Categories"></nav>
+  <main class="scroll" id="scroll"></main>
+  <footer class="footer" id="footer"></footer>
+  <div class="sr" id="live" role="status" aria-live="polite"></div>
+  <!-- SCRIPT -->
+</body>
+</html>
